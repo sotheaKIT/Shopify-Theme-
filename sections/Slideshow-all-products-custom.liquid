@@ -1,0 +1,317 @@
+<!-- /sections/Slideshow-all-products-custom.liquid -->
+{% assign section-class = '' %}
+
+{% if section.settings.title != blank %}
+	{% assign section-class = 'shopify-section' %}
+{% endif %}
+<div class="{{ section-class }}">
+  <div class="media">
+    <div class="wrapper">
+      {% if section.settings.title != blank %}
+        <div class="section-header text-center">
+          <h2 class="h1 section-header__title">{{ section.settings.title | escape }}</h2>
+          <hr class="hr--small">
+        </div>
+      {% endif %}
+
+      <!-- Slider main container -->
+      {%- assign collection = collections[section.settings.collection] -%}
+      <div class="product-slide-container swiper-container">
+        <div class="swiper-wrapper">
+          {% for product in collection.products %}
+            {% assign sold_out = true %}
+            {% if product.available %}
+                {% assign sold_out = false %}
+            {% endif %}
+
+            {% assign on_sale = false %}
+            {% if product.compare_at_price > product.price %}
+              {% assign on_sale = true %}
+            {% endif %}
+
+            {%- assign featured_image = product.featured_media.preview_image %}
+            {%- assign img_url = featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            {%- assign product_title = product.title -%}
+            {%- assign product_price = product.price -%}
+
+            <div class="swiper-slide">
+                <div class="product-card">
+                    <a class="product-image-link" href="{{ product.url }}">
+                        <figure class="product-media">
+                            {% if featured_image.src == blank %}
+                              <img class="product-image" src="{{ featured_image.src | img_url: '1024x' }}" alt="{{ featured_image.alt | escape }}">
+                            {% else %}
+                              <img class="product-image lazyload"
+                                 data-src="{{ img_url }}"
+                                 data-widths="[180, 370, 590, 740, 900, 1080, 1296, 1512, 1728, 2048]"
+                                 data-aspectratio="{{ featured_image.aspect_ratio }}"
+                                 data-sizes="auto"
+                                 alt="{{ featured_image.alt | escape }}"
+                                 data-image>
+                              <noscript>
+                                <img class="grid-product__image" src="{{ featured_image.src | img_url: '1024x' }}" alt="{{ featured_image.alt | escape }}">
+                              </noscript>
+                            {% endif %}
+                        </figure>
+                    </a>
+                    <div class="product-txt">
+                        <h3 class="product-name">
+                         <a href="{{ product.url }}">
+                            {{ product.title }}
+                         </a>
+                        </h3>
+                        <span class="product-price">
+                            {% if on_sale  %}
+                                <span class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
+                                {{ product.price | money_without_trailing_zeros }}
+
+                                <del>{{ product.compare_at_price | money_without_trailing_zeros }}</del>
+                            {% else %}
+                                <span class="visually-hidden">{{ 'products.general.regular_price' }}</span>
+                                {{ product.price | money_without_trailing_zeros }}
+                            {% endif %}
+
+                            {% if sold_out %}
+                              <div class="product__sold-out">
+                                <p>{{ 'products.product.sold_out_html' | t }}</p>
+                              </div>
+                              {% elsif on_sale %}
+
+                              {% endif %}
+                        </span>
+
+                        <span class="product-tags">
+                            {% for tag in product.tags %}
+                                <span class="product-tag__item">
+                                <a href="/collections/all?constraint={{tag}}">{{ tag }}</a>
+                                </span>
+                            {% endfor %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+          {% endfor %}
+          </div>
+          <!-- If we need navigation buttons -->
+          <div class="product-button-prev swiper-button-prev">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M0-.25H24v24H0Z" transform="translate(0 0.25)" style="fill:none"></path>
+                <polyline points="14.4 7.03 9 12.43 14.4 17.83" style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-miterlimit:8;stroke-width:3px"></polyline>
+              </svg>
+          </div>
+          <div class="product-button-next swiper-button-next">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M0-.25H24v24H0Z" transform="translate(0 0.25)" style="fill:none"></path>
+                <polyline points="10 17.83 15.4 12.43 10 7.03" style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-miterlimit:8;stroke-width:3px"></polyline>
+              </svg>
+          </div>
+          <!-- Add Scrollbar -->
+          <div class="swiper-scrollbar"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Products Carousel",
+  "settings": [
+	{
+	  "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Title"
+	},
+	{
+        "type": "collection",
+        "id": "collection",
+        "label": "Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Products Carousel",
+      "category": "$Custom Section"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+.custom-slide-container .swiper-pagination .swiper-pagination-bullet-active {
+    background-color: #ab6900;
+}
+.custom-slide-container .swiper-button-prev,
+.custom-slide-container .swiper-button-next {
+    color: #ab6900;
+}
+.custom-slide-container .swiper-scrollbar .swiper-scrollbar-drag {
+    background-color: #d1bf97;
+}
+
+.product-slide-container.swiper-container {
+  width: 100%;
+  height: 100%;
+  background: #FFF;
+  padding-bottom: 30px;
+}
+
+.product-slide-container .swiper-slide {
+  font-size: 18px;
+  color: #FFF;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-slide-container .GGswiper-slide:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    height: 100vh;
+    background-image: linear-gradient(to bottom,
+    rgba(0, 0, 0, 0.25),
+    rgba(0, 0, 0, 0.25) calc(100% - 150px),
+    rgba(0, 0, 0, 0.38) calc(100% - 60px),
+    rgba(0, 0, 0, 0.8));
+}
+
+.product-slide-container .product-button-next.swiper-button-next svg, .product-slide-container .product-button-prev.swiper-button-prev svg {
+    color: #333333;
+    transition: color .3s;
+    margin: 0 auto;
+    height: 20px;
+    width: 20px;
+}
+.product-slide-container .product-button-next.swiper-button-next, .product-slide-container .product-button-prev.swiper-button-prev {
+    width: 44px;
+    height: 44px;
+    top: 45%;
+    background-color: #FFFFFF;
+    border-radius: 50%;
+}
+.product-slide-container .product-button-next.swiper-button-next:hover, .product-slide-container .product-button-prev.swiper-button-prev:hover {
+    transform: scale(1.06);
+}
+.product-slide-container .product-button-next.swiper-button-next:after, .product-slide-container .product-button-prev.swiper-button-prev:after {
+    display: none;
+}
+
+
+/*Product Card*/
+.product-card {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+
+}
+.product-media {
+    position: relative;
+    padding-top: 100%;
+    border-radius: 10px;
+    margin: 0;
+    overflow: hidden;
+}
+.product-txt {
+    padding: 16px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-image: linear-gradient(to bottom, rgba(255,0,0,0), rgba(0,0,0,1));
+}
+.product-card .product-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0, 0.14, 0.19, 1);
+}
+.product-card .product-txt .product-name:hover a {
+    text-decoration: underline;
+}
+.product-card .product-image:hover {
+    transform: scale(1.05);
+    transition: transform 0.6s cubic-bezier(0, 0.14, 0.19, 1);
+}
+.product-name {
+    font-size: 16px;
+    line-height: 1;
+    margin-bottom: 5px;
+    padding-top: 12px;
+    color: #dddddd !important;
+}
+.product-name a {
+    text-decoration: none;
+    color: #dddddd !important;
+}
+.product-price {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    color: #dddddd !important;
+}
+.product-price del {
+    font-weight: 400;
+    color: #d1bf97;
+}
+.product-tags {
+    display: flex;
+    flex-flow: row wrap;
+}
+.product-tags .product-tag__item * {
+    font-size: 14px;
+    line-height: 19px;
+    color: #dddddd !important;
+    padding: 5px 10px;
+    background-color: #202020;
+    border: 3px solid #373737;
+    border-radius: 6px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+
+}
+.product-tags .product-tag__item:first {
+    margin-left: 0;
+}
+</style>
+
+<script>
+var swiper = new Swiper('.product-slide-container', {
+  speed: 200,
+  spaceBetween: 20,
+  slidesPerView: 1,
+  freeMode: true,
+  autoplay: {
+     delay: 4000,
+   },
+  parallax: true,
+  scrollbar: {
+      el: '.swiper-scrollbar',
+      hide: false,
+    },
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true,
+  },
+  navigation: {
+    nextEl: '.product-button-next.swiper-button-next',
+    prevEl: '.swiper-button-prev.swiper-button-prev',
+  },
+  breakpoints: {
+    750: {
+        slidesPerView: 2,
+    },
+    1024: {
+        slidesPerView: 3,
+    },
+  }
+});
+</script>
+

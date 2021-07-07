@@ -1,0 +1,563 @@
+<!-- /templates/article.liquid -->
+{% assign number_of_comments = article.comments_count %}
+
+{% if comment and comment.created_at %}
+  {% assign number_of_comments = article.comments_count | plus: 1 %}
+{% endif %}
+
+{% assign current_url = '' %}
+
+{% case template %}
+{% when 'page' %}
+{% assign current_url = page.url %}
+{% when 'blog' %}
+{% assign current_url = blog.url %}
+{% when 'article' %}
+{% assign current_url = blog.url %}
+{% when 'collection' %}
+{% assign current_url = collection.url %}
+{% when 'product' %}
+{% assign current_url = product.url %}
+{% endcase %}
+
+{% if current_url contains '/blogs/blog' %} 
+ {% assign is_blog = true %}
+	
+{% endif %}
+	{% if is_blog %}
+		<style>
+          body, input, textarea, button, select{
+          font-family: 'Kiwi Maru', serif;
+          }
+          h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+            font-family: shueip,"Hiragino Kaku Gothic ProN","ヒラギノ角ゴ ProN W3",YuGothic,"Yu Gothic",sans-serif;
+          }
+          h1, .h1 {
+            font-family: 'Dancing Script', cursive, 'Yu Mincho Light','YuMincho','Yu Mincho','游明朝体',sans-serif;
+            font-size: 36px;
+          }
+          .icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            fill: currentColor;
+          }
+          .icon-search {
+            cursor: pointer;
+        }
+          
+	@media only screen and (min-width: 768px){
+          
+      .blog-content-wrapper {
+        max-width: 1120px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 16px;
+    }
+      .blog-main-wrapper {
+        float: left;
+        width: 70%;
+        padding-bottom: 0;
+    }
+      .blog-sidebar-wrapper {
+        float: right;
+        width: 30%;
+    }
+      
+      
+    }
+          
+      .gridblog-container {
+        display: flex;
+        flex-flow: wrap;
+        justify-content: space-between;
+    }    
+      .new-search-bar {
+         margin-bottom: 10px;
+         position: relative;
+         width: 100%;
+         margin-bottom: 1.875rem;
+    }
+      .input-group {
+          display: flex;
+    }
+	  .menu {
+        position: relative;
+        width: 100%;
+        margin: 0 auto;
+        width: 100%;
+        margin-bottom: .9375rem;
+    }
+      .menu_header.open {
+        border-radius: 10px;
+        text-decoration: none;
+        cursor: pointer;
+        position: relative;
+        display: block;
+        width: 100%;
+        border: 1px solid #e5e5e5;
+    }
+      .menu_header {
+        font-family: shueip,"Hiragino Kaku Gothic ProN","ヒラギノ角ゴ ProN W3",YuGothic,"Yu Gothic",sans-serif;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-height: 1.5rem;
+        margin: 0 auto .21875rem;
+        box-sizing: border-box;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1;
+        color: rgba(0,0,0,.87);
+    }     
+    
+      .content_header:before {
+        content: "";
+        display: block;
+        width: .4375rem;
+        height: 1.5rem;
+        margin-right: .75rem;
+        border-radius: .3125rem;
+        background-color: #ffcd00;
+    }
+
+    *, :after, :before, input {
+        box-sizing: border-box;
+    }
+      .menu.open .menu_header.open {
+    display: none;
+}
+      .menu_header.open span {
+    display: block;
+    padding: 13px 30px 9px 11px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+      .menu.open .menu-content-wrapper ul {
+    max-height: unset;
+    overflow-y: auto;
+    opacity: 1;
+    position: relative;
+}
+      .menu-content-wrapper ul {
+    z-index: 1;
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 10px;
+    max-height: 0;
+    opacity: 0;
+    transition: opacity 250ms,max-height 250ms;
+    list-style: none;
+    background: #fff;
+    box-shadow: 0 0 20px 0 rgb(0 0 0 / 10%), 0 20px 20px 0 rgb(0 0 0 / 15%);
+}
+     .menu .item-icon {
+    margin: 0 18px 0 0;
+    width: 24px;
+    height: 24px;
+    float: left;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+     .menu-content-wrapper li a.menu_header {
+    padding: 14px 12px;
+    margin: 0 auto 7px;
+}
+    .menu-content-wrapper li a {
+    display: block;
+    padding: 11.3px 12px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 250ms,color 250ms;
+}
+     dd.menu-content-wrapper {
+    margin-left: 0;
+}
+     .menu-content-wrapper ul {
+    margin: 0;
+}
+     .new-search-bar .new-search-bar__text-field {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 20px;
+    color: rgba(0,0,0,.87);
+    letter-spacing: 0;
+    width: 100%;
+    padding: 13px 30px 13px 15px;
+    border: none;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+}
+     .new-search-bar .new-search-bar__icon {
+    color: #000;
+    position: absolute;
+    top: 40%;
+    right: 13px;
+    transform: translateY(-50%);
+}
+          
+		  .side-bar-title:before {
+            content: "";
+            display: block;
+            width: .4375rem;
+            height: 1.5rem;
+            margin-right: .75rem;
+            border-radius: .3125rem;
+            background-color: #ffcd00;
+            float: left;
+          }
+           ol, ul {
+            list-style: none;
+         }
+          .blog-category-list .item-content{
+    		padding: .7rem 0;
+		 }
+          
+          .blog-category-list .item-icon {
+            margin: 0 16px 0 0;
+            width: 26px;
+            height: 26px;
+            float: left;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+         }
+          .c-blog-list .c-blog-list__ttl {
+            font-size: .8125rem;
+            line-height: 20px;
+            letter-spacing: 0;
+            color: #000;
+            margin-bottom: 2px;
+        }
+         
+          .new-search-bar {
+            margin-bottom: 10px;
+            position: relative;
+            width: 100%;
+            margin-bottom: 1.875rem;
+        }
+          
+          .c-sp_only {
+            display: none!important;
+         }
+          @media screen and (max-width: 768px)
+          .blog-main-wrapper {
+            width: 100%;
+            max-width: 100%;
+            padding-bottom: 40px;
+         }
+          .blog-post-flex-container {
+            display: flex;
+            flex-flow: wrap;
+            justify-content: space-between;
+         }
+          
+          @media screen and (max-width: 768px){
+          .c-sp_only {
+            display: block!important;
+          }
+          .c-pc_only {
+            display: none!important;
+         }
+          .new-search-bar {
+            margin-bottom: 1.25rem;
+        }
+          } 
+          
+     
+          .menu_header {
+            font-family: shueip,"Hiragino Kaku Gothic ProN","ヒラギノ角ゴ ProN W3",YuGothic,"Yu Gothic",sans-serif;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            min-height: 1.5rem;
+            margin: 0 auto .21875rem;
+            box-sizing: border-box;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1;
+            color: rgba(0,0,0,.87);
+         }
+          .menu_header.open:after {
+            content: "";
+            position: absolute;
+            right: 22px;
+            top: 17px;
+            border: solid #000;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+            transform: rotate(45deg) translateY(-50%);
+            -webkit-transform: rotate(45deg) translateY(-50%);
+         }
+          
+          dl {
+            display: block;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+         }
+         @media screen and (min-width: 591px){
+        .section-header {
+            margin-bottom: 0px;
+        }}
+          
+      </style>
+	{% endif %} 
+<div class="page-width page-content {% if is_blog %}blog-content-wrapper{% endif %}">
+{% if is_blog %}
+  <div class="blog-main-wrapper">
+    <div class="c-sp_only">
+      <form action="/search" method="get" class="input-group new-search-bar" role="search">
+      <input type="hidden" name="type" value="article">
+      <input type="search" name="q" value="" placeholder="記事を検索する" class="new-search-bar__text-field" aria-label="記事を検索する">
+      <span class="new-search-bar__icon">
+        <label>
+        <input type="submit" style="display: none;">
+			<span class="icon icon-search" aria-hidden="true"></span>        
+        </label>
+      </span>
+    </form>
+      {% render 'blog-category-menu' %}
+    </div>
+    
+ {% endif %}   
+
+  <div class="grid">
+  <article class="grid__item large--five-sixths push--large--one-twelfth article" itemscope itemtype="http://schema.org/Article">
+
+    <header class="section-header text-center">
+      <h1>{{ article.title }}</h1>
+      <hr class="hr--small">
+      <p>
+        <span class="date"><time datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' }}">{{ article.published_at | date: format: 'date' }}</time></span>
+      </p>
+    </header>
+
+    <div class="grid">
+      <div class="grid__item large--four-fifths push--large--one-tenth">
+
+        <div class="rte rte--indented-images" itemprop="articleBody">
+          {{ article.content }}
+        </div>
+
+        <ul class="tags tags--article inline-list">
+          {% include 'tags-article' %}
+        </ul>
+
+        {% if section.settings.social_sharing_blog %}
+        {% include 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image %}
+        {% endif %}
+
+        {% if blog.comments_enabled? %}
+
+        {% if number_of_comments > 0 %}
+        <hr class="hr--large">
+        <h2 class="h3 text-center">{{ 'blogs.comments.with_count' | t: count: number_of_comments }}</h2>
+        <hr class="hr--small hr--clear">
+        {% endif %}
+
+        {% paginate article.comments by 5 %}
+        {% comment %}
+        #comments is required, it is used as an anchor link by Shopify.
+        {% endcomment %}
+        <div id="comments">
+
+          {% if comment and comment.created_at %}
+          <p class="note form-success">
+            {% if blog.moderated? %}
+            {{ 'blogs.comments.success_moderated' | t }}
+            {% else %}
+            {{ 'blogs.comments.success' | t }}
+            {% endif %}
+          </p>
+          {% endif %}
+
+          {% if number_of_comments > 0 %}
+          <ul class="no-bullets">
+            {% comment %}
+            If a comment was just submitted with no blank field, show it.
+            {% endcomment %}
+            {% if comment and comment.created_at %}
+            <li id="{{ comment.id }}" class="comment first{% if article.comments_count == 0 %} last{% endif %}">
+              {% include 'comment' %}
+            </li>
+            {% endif %}
+
+            {% comment %}
+            Showing the rest of the comments.
+            {% endcomment %}
+            {% for comment in article.comments %}
+            <li id="{{ comment.id }}" class="comment{% unless number_of_comments > article.comments_count %}{% if forloop.first %} first{% endif %}{% endunless %}{% if forloop.last %} last {% endif %}">
+              {% include 'comment' %}
+            </li>
+
+            {% unless forloop.last %}
+            <li><hr class="hr--clear"></li>
+            {% endunless %}
+            {% endfor %}
+          </ul>
+
+          {% if paginate.pages > 1 %}
+          {% include 'pagination' %}
+          {% endif %}
+
+          {% endif %}
+
+          <hr class="hr--large">
+
+          <h2 class="h3 text-center">{{ 'blogs.comments.title' | t }}</h2>
+          <hr class="hr--small hr--clear">
+
+          <div class="form-vertical">
+            {% form 'new_comment', article %}
+
+            {{ form.errors | default_errors }}
+
+            <div class="grid grid--small">
+              <div class="grid__item large--one-half">
+                <label for="CommentAuthor" class="hidden-label">{{ 'blogs.comments.name' | t }}</label>
+                <input class="input-full{% if form.errors contains 'author' %} error{% endif %}" type="text" name="comment[author]" placeholder="{{ 'blogs.comments.name' | t }}" id="CommentAuthor" value="{{ form.author }}" autocapitalize="words">
+              </div>
+              <div class="grid__item large--one-half">
+                <label for="CommentEmail" class="hidden-label">{{ 'blogs.comments.email' | t }}</label>
+                <input class="input-full{% if form.errors contains 'email' %} error{% endif %}" type="email" name="comment[email]" placeholder="{{ 'blogs.comments.email' | t }}" id="CommentEmail" value="{{ form.email }}" autocorrect="off" autocapitalize="off">
+              </div>
+            </div>
+
+            <label for="CommentBody" class="hidden-label">{{ 'blogs.comments.message' | t }}</label>
+            <textarea class="input-full{% if form.errors contains 'body' %} error{% endif %}" name="comment[body]" id="CommentBody" placeholder="{{ 'blogs.comments.message' | t }}">{{ form.body }}</textarea>
+
+            <div class="text-center">
+              {% if blog.moderated? %}
+              <p>{{ 'blogs.comments.moderated' | t }}</p>
+              {% endif %}
+
+              <input type="submit" class="btn" value="{{ 'blogs.comments.post' | t }}">
+            </div>
+
+            {% endform %}
+          </div>
+
+        </div>
+        {% endpaginate %}
+        {% endif %}
+
+      </div>
+    </div>
+
+    </article>
+    </div>
+    
+ </div>
+{% if is_blog %}
+  <div class="blog-sidebar-wrapper">
+    <div class="c-pc_only">
+      
+      <form action="/search" method="get" class="input-group new-search-bar" role="search">
+      <input type="hidden" name="type" value="article">
+      <input type="search" name="q" value="" placeholder="記事を検索する" class="new-search-bar__text-field" aria-label="記事を検索する">
+      <span class="new-search-bar__icon">
+        <label>
+        <input type="submit" style="display: none;">
+			<span class="icon icon-search" aria-hidden="true"></span>         </label>
+      </span>
+      </form>
+      
+      {% render 'blog-category-list' %}
+      
+    </div>
+    
+    <hr class="c-sp_only dotted-line c-mb--40">
+    <hr class="c-pc_only dotted-line c-mb--40 c-mt--30">
+    
+    
+    
+  </div>
+   		
+{% endif %}
+</div>
+
+
+
+
+
+
+
+<hr class="hr--medium hr--clear">
+<div class="text-center">
+  <a href="{{ blog.url }}" class="return-link">&larr; {{ 'blogs.article.back_to_blog' | t: title: blog.title }}</a>
+</div>
+
+
+
+
+
+
+
+{% schema %}
+{
+  "name": {
+    "cs": "Stránky s články",
+    "da": "Artikelsider",
+    "de": "Artikelseiten",
+    "en": "Article pages",
+    "es": "Páginas del artículo",
+    "fi": "Artikkelisivut",
+    "fr": "Pages d'articles",
+    "it": "Pagine articoli",
+    "ja": "記事ページ",
+    "ko": "문서 페이지",
+    "nb": "Artikkelsider",
+    "nl": "Artikelpagina's",
+    "pl": "Strony artykułów",
+    "pt-BR": "Páginas do artigo",
+    "pt-PT": "Páginas de artigo",
+    "sv": "Artikelsidor",
+    "th": "หน้าบทความ",
+    "tr": "Makale sayfaları",
+    "vi": "Trang bài viết",
+    "zh-CN": "文章页面",
+    "zh-TW": "文章頁面"
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "social_sharing_blog",
+      "label": {
+        "cs": "Zobrazit tlačítka pro sdílení na sociálních sítích",
+        "da": "Vis knapper til deling på sociale medier",
+        "de": "Social-Sharing-Schaltflächen anzeigen",
+        "en": "Show social sharing buttons",
+        "es": "Mostrar botones para compartir en redes sociales",
+        "fi": "Näytä sosiaalisen median jakamispainikkeet",
+        "fr": "Afficher les boutons de partage social",
+        "it": "Mostra i pulsanti per la condivisione sui social",
+        "ja": "ソーシャルメディアでの共有ボタンを表示する",
+        "ko": "소셜 공유 버튼 표시",
+        "nb": "Vis knapper for deling på sosiale medier",
+        "nl": "Knoppen voor sociaal delen weergeven",
+        "pl": "Pokaż przyciski udostępniania w mediach społecznościowych",
+        "pt-BR": "Exibir botões de compartilhamento em redes sociais",
+        "pt-PT": "Mostrar botões de partilha nas redes sociais",
+        "sv": "Visa knappar för delning i sociala medier",
+        "th": "แสดงปุ่มสำหรับแชร์ลงโซเชียล",
+        "tr": "Sosyal medya paylaşım düğmelerini göster",
+        "vi": "Hiển thị nút chia sẻ qua mạng xã hội",
+        "zh-CN": "显示社交分享按钮",
+        "zh-TW": "顯示社群分享按鈕"
+      },
+      "default": true
+    }
+  ]
+}
+{% endschema %}

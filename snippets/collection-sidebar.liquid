@@ -1,0 +1,148 @@
+<!-- /snippets/collection-sidebar.liquid -->
+{% comment %}
+  District Theme
+  ==============
+  Custom sidebar navigation to display the three menus set in the Customize 
+  Theme menu and advanced tag filtering.
+
+  Adding tags in the "Category_Tag Name" format will automatically generate
+  menus grouped by categories.  All of the product tags need to start with a
+  Category_
+
+  The example below will create three menus. One for Color, Featured and Material.
+    Color_Red
+    Color_Blue
+    Color_Black
+    Featured_New Products
+    Featured_On Sale
+    Material_Cotton
+    Material_Wool
+
+{% endcomment %}
+{% assign menu_count = 0 %}
+{% if linklists[settings.collections_sidebar_link_list_a].links.size > 0 %}
+  {% assign menu_count = menu_count | plus: 1 %}
+{% endif %}
+
+{% if linklists[settings.collections_sidebar_link_list_b].links.size > 0 %}
+  {% assign menu_count = menu_count | plus: 1 %}
+{% endif %}
+
+{% if linklists[settings.collections_sidebar_link_list_c].links.size > 0 %}
+  {% assign menu_count = menu_count | plus: 1 %}
+{% endif %}
+
+<div class="nav-container">
+
+  {% if linklists[settings.collections_sidebar_link_list_a].links.size > 0 %}
+    <nav class="link-list menu-{{ menu_count }}">
+      <h5>{{ linklists[settings.collections_sidebar_link_list_a].title }}</h5>
+      <ul>
+        {% for link in linklists[settings.collections_sidebar_link_list_a].links %}
+          <li {% if collection.url == link.url %}class="active"{% endif %}><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+  {% endif %}
+
+  {% if linklists[settings.collections_sidebar_link_list_b].links.size > 0 %}
+    <nav class="link-list menu-{{ menu_count }}">
+      <h5>{{ linklists[settings.collections_sidebar_link_list_b].title }}</h5>
+      <ul>
+        {% for link in linklists[settings.collections_sidebar_link_list_b].links %}
+          <li {% if collection.url == link.url %}class="active"{% endif %}><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+  {% endif %}
+
+  {% if linklists[settings.collections_sidebar_link_list_c].links.size > 0 %}
+    <nav class="link-list menu-{{ menu_count }}">
+      <h5>{{ linklists[settings.collections_sidebar_link_list_c].title }}</h5>
+      <ul>
+        {% for link in linklists[settings.collections_sidebar_link_list_c].links %}
+          <li {% if collection.url == link.url %}class="active"{% endif %}><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+  {% endif %}
+
+  {% comment %}
+    Product tags in the current collection
+  {% endcomment %}
+  {% if settings.collections_sidebar_tags_enable %}
+
+    {% comment %}
+    A loop to catch and filter out the different tag categories.
+    This is mainly for advanced tagging, but will also help us strip
+    out any tag categories from our tags (E.g. remove BRAND_ from BRAND_tag)
+    {% endcomment %}
+    {% if template contains 'collection' and collection.all_tags.size > 0 %}
+      {% assign categories = '' %}
+      {% for tag in collection.all_tags %}
+        {% if tag contains '_' %}
+          {% capture categories %}{% unless categories == blank  %}{{ categories }}|{% endunless %}{{ tag | split: '_' | first }}{% endcapture %}
+        {% endif %}
+      {% endfor %}
+      {% assign cat_array = categories | split: '|' | uniq %}
+      {% endif %}
+
+
+      {% if collection.all_tags.size > 0 %}
+
+        {% comment %}
+          Loop through tag categories
+        {% endcomment %}
+        {% for cat_item in cat_array %}
+          <nav class="tags">
+          <h5>{{ cat_item }}</h5>
+          <ul class="advanced-filters">
+            {% comment %}
+              Loop through collection tags
+            {% endcomment %}
+            {% for tag in collection.all_tags %}
+              {% assign cat = tag | split: '_' | first %}
+              {% if cat != tag and cat_item == cat %}
+                {% comment %}
+                  Strip out tag category prefix and add/remove link for tag filtering
+                {% endcomment %}
+                {% if current_tags contains tag %}
+                  <li class="advanced-filter active active-filter close" data-group="{{ cat_item }}" data-handle="{{ tag | handle }}">{{ tag | remove_first: cat_item | remove_first: '_' | link_to_remove_tag: tag }}</li>
+                {% else %}
+                  <li class="advanced-filter" data-group="{{ cat_item }}" data-handle="{{ tag | handle }}">{{ tag | remove_first: cat_item | remove_first: '_' | link_to_add_tag: tag }}</li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </nav>
+        {% endfor %}
+
+        <script>
+          $(function() {
+            var filters = $('.advanced-filter'),
+              el,
+              elGroup,
+              elHandle,
+              activeTagInGroup;
+
+            filters.on('click', function(e) {
+              el = $(this);
+              elGroup = el.data('group');
+              elHandle = el.data('handle');
+              activeTagInGroup = $('.active-filter[data-group="'+ elGroup +'"]');
+              // If the tag clicked is not already active and its group contains an active tag, we will swap tag within the group.
+              if ( !el.hasClass('active-filter')  && activeTagInGroup.size() ) {
+                e.preventDefault();
+                location.href = location.href
+                  // swap tag
+                  .replace(activeTagInGroup.data('handle'), elHandle)
+                  // go back to page 1
+                  .replace(/(&page=\d+)|(page=\d+&)|(\?page=\d+$)/, '');
+              }
+            });
+          });
+        </script>
+    {% endif %}
+  {% endif %}
+
+</div>

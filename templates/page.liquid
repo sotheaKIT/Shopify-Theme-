@@ -1,0 +1,32 @@
+<!-- /templates/page.liquid -->
+<!-- {% comment %}
+{% if page.url == '/blogs/blog' %} 
+<style>
+body, input, textarea, button, select{
+  font-family: 'Kiwi Maru', serif;
+}
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+  font-family: shueip,"Hiragino Kaku Gothic ProN","ヒラギノ角ゴ ProN W3",YuGothic,"Yu Gothic",sans-serif;
+}
+</style>
+{% endif %}
+{% endcomment %} -->
+
+<div class="grid">
+  <div class="grid__item large--five-sixths push--large--one-twelfth">
+
+    <header class="section-header text-center">
+      <h1>{{ page.title }}</h1>
+      <hr class="hr--small">
+    </header>
+
+    <div class="grid">
+      <div class="grid__item large--four-fifths push--large--one-tenth">
+        <div class="rte rte--nomargin rte--indented-images">
+          {{ page.content }}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

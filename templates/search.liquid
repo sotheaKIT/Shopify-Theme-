@@ -1,0 +1,139 @@
+<!-- /templates/search.liquid -->
+{% comment %}
+
+  To return only products or pages in results:
+    - http://docs.shopify.com/manual/configuration/store-customization/return-only-product-in-storefront-search-results
+    - Or manually add type=product or type=page to the search URL as a parameter
+
+{% endcomment %}
+
+{% comment %}
+  Avoid accessing search.results before the opening paginate tag.
+  If you do, the pagination of results will be broken.
+{% endcomment %}
+{% paginate search.results by 12 %}
+<style>
+  .search-bar--page {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  .input-group .btn, .input-group .btn--secondary, .input-group .input-group-field {
+    height: 35px;
+    padding: 0;
+    margin: 2px;
+}
+  .new-search-bar .new-search-bar__text-field {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 20px;
+    color: rgba(0,0,0,.87);
+    letter-spacing: 0;
+    width: 100%;
+    border: none;
+    border-radius: 10px ;
+    background-color: #f5f5f5;
+}
+  input, select, textarea {
+    padding: 10px 15px!important;
+    background: #f5f5f5;
+    border: 1px solid #f5f5f5;
+    border-bottom-left-radius: 10px !important;
+    border-top-left-radius: 10px !important;
+    color: #000;
+}
+  .btn, .btn--secondary, .rte .btn, .rte .btn--secondary, .rte .shopify-payment-button .shopify-payment-button__button--unbranded, .shopify-payment-button .rte .shopify-payment-button__button--unbranded, .shopify-payment-button .shopify-payment-button__button--unbranded {
+    display: inline-block;
+    /* padding: 8px 10px; */
+    /* margin: 0; */
+    /* width: auto; */
+    /* line-height: 1.42; */
+    /* font-weight: 700; */
+    text-decoration: none;
+    text-align: center;
+    vertical-align: middle;
+    white-space: normal;
+    cursor: pointer;
+    border-bottom-right-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+    border: 1px solid transparent;
+    width: 30px;
+    /* -webkit-user-select: none; */
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    /* border-radius: 0; */
+    background-color: #d1bf97;
+    /* color: #fff; */
+    /* -webkit-transition: background-color .4s ease-out; */
+    -moz-transition: background-color .4s ease-out;
+    -ms-transition: background-color .4s ease-out;
+    -o-transition: background-color .4s ease-out;
+    transition: background-color .4s ease-out;
+}
+  .grid-search__page-link {
+    display: block;
+    background-color: #D1BF97;
+    padding: 20px;
+    color: #1f2021;
+    overflow: hidden;
+    object-fit: cover;
+    border-radius: 1rem;
+}
+</style>
+
+  <div class="grid" data-section-type="search">
+    <div class="grid__item">
+      <header class="section-header text-center">
+        {% if search.performed %}
+          {% if search.results_count == 0 %}
+            <h1 class="text-center">{{ 'general.search.no_results_html' | t: terms: search.terms }}</h1>
+          {% else %}
+            <h1 class="text-center">{{ 'general.search.results_for_html' | t: terms: search.terms }}</h1>
+          {% endif %}
+        {% else %}
+          <h1 class="text-center">{{ 'general.search.title' | t }}</h1>
+        {% endif %}
+        <hr class="hr--small">
+      </header>
+
+      {% include 'search-bar', search_btn_style: 'btn', search_bar_location: 'search-bar--page' %}
+
+      {% if search.performed %}
+
+        <hr class="hr--medium hr--clear">
+
+        <div class="grid-uniform">
+          {% for item in search.results %}
+
+            {% if item.object_type == 'product' %}
+              {% assign product = item %}
+              {% include 'product-grid-item' %}
+            {% else %}
+              <div class="grid__item grid-search large--one-third medium--one-half">
+                <div class="grid-search__page">
+                  <a href="{{ item.url }}" class="grid-search__page-link">
+                    <span class="grid-search__page-content">
+                      <span class="h4 text-center">{{ item.title }}</span>
+                      {{ item.content | strip_html | truncatewords: 60 }}
+                    </span>
+                  </a>
+                </div>
+              </div>
+            {% endif %}
+
+          {% endfor %}
+        </div>
+
+        {% if paginate.pages > 1 %}
+          {% include 'pagination' %}
+        {% endif %}
+
+      {% endif %}
+
+    </div>
+  </div>
+
+{% endpaginate %}
